@@ -1,0 +1,15 @@
+﻿@model  IdentitySecutity.Models.TwoFactorModel
+@{
+    ViewBag.Title = "TwoFactor";
+}
+
+<h2> @ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("TwoFactor", "Account", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.Provider);
+    <p>Code:@Html.TextBoxFor(x => x.Code)</p>
+    @Html.CheckBoxFor(x => x.RememberBrowser);
+    <input type="submit" value="Submit" class="btn">
+}

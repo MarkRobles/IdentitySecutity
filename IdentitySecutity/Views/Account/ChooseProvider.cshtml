@@ -1,0 +1,18 @@
+﻿@model IdentitySecutity.Models.ChooseProviderModel
+@{
+    ViewBag.Title = "ChooseProvider";
+}
+
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("ChooseProvider", "Account", FormMethod.Post))
+{
+    <p>
+        Provider @Html.DropDownListFor(x => x.ChosenProvider, Model.Providers.Select(x => new SelectListItem
+{
+Value = x,
+   Text = x
+}).ToList())
+    </p>
+    <input class="btn" type="submit" value="Submit">
+}
+
