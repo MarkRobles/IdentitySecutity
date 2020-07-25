@@ -32,8 +32,11 @@ namespace IdentitySecutity
                     //Use UserStore to configure a UserManager
                     var usermanager = new UserManager<IdentityUser>(cont.Get<UserStore<IdentityUser>>());
                     //Register new instance of PhoneNumberTokenProvider that get configured every time we request a new UserManager
-                    usermanager.RegisterTwoFactorProvider("SMS", new PhoneNumberTokenProvider<IdentityUser>() { MessageFormat="Token:{0}"});
+                    usermanager.RegisterTwoFactorProvider("SMS", new PhoneNumberTokenProvider<IdentityUser>() { MessageFormat="Token:{0}"});        
                     usermanager.SmsService = new SmsService();
+                    //Register user Provider
+                    usermanager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser>(opt.DataProtectionProvider.Create());
+                    usermanager.EmailService = new EmailService();
                     return usermanager;
                 });
 

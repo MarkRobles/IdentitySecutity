@@ -33,13 +33,18 @@ namespace IdentitySecutity.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var user = new IdentityUser
+            var user = new IdentityUser(model.UserName)
             {
-                UserName = model.UserName
+               Email = model.UserName
             };
+            
             var identityResult = await UserManager.CreateAsync(user,model.Password );
 
+
             if (identityResult.Succeeded) {
+              var token =  await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+              var confirmUrl =  Url.Action("ConfirmEmail","Account", new {userid = user.Id, token = token },Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id,"Email confirmation",$"Use link to confirm email:{ confirmUrl}");
                 return RedirectToAction("Index","Home");
                     }
 
@@ -105,6 +110,16 @@ namespace IdentitySecutity.Controllers
                     ModelState.AddModelError("", "Invalid Credentials");
                     return View(model);
             }
+        }
+
+
+        public  async Task<ActionResult> ConfirmEmail(string userid, string token) {
+           var identityResult =  await UserManager.ConfirmEmailAsync(userid,token);
+            if(!identityResult.Succeeded)
+            {
+                return View("Error");
+            }
+            return RedirectToAction("Index","Home");
         }
     }
 }
