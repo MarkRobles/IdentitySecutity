@@ -181,7 +181,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ChooseProviderModel.cs" />
+    <Compile Include="Models\ForgotPasswordModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\PasswordResetModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\TwoFactorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -332,6 +334,8 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\ChooseProvider.cshtml" />
     <Content Include="Views\Account\TwoFactor.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\PasswordReset.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
