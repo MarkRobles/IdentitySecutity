@@ -20,6 +20,11 @@ namespace IdentitySecutity.Services
             var sid = ConfigurationManager.AppSettings["twilio:Sid"];
             var token = ConfigurationManager.AppSettings["twilio:Token"];
             var from = ConfigurationManager.AppSettings["twilio:From"];
+            // Find your Account SID and Auth Token at twilio.com/console
+            //var sid = Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
+            //var token = Environment.GetEnvironmentVariable("TWILIO_AUTH_TOKEN");
+            //var from = Environment.GetEnvironmentVariable("TWILIO_FROM");
+
 
             TwilioClient.Init(sid, token);
             await MessageResource.CreateAsync(new PhoneNumber(message.Destination), from: new PhoneNumber(from),
