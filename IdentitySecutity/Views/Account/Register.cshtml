@@ -5,19 +5,22 @@
 
     <div class="row mt-5">
         <div class="col-12">
-            <h2>Register</h2>
+            <h2>@ViewBag.Title</h2>
         </div>
 
         @using (Html.BeginForm("Register", "Account", FormMethod.Post))
         {
             @Html.ValidationSummary()
-            <div class="col-12 d-flex flex-column  justify-content-around  ">
-                @Html.LabelFor(x => x.UserName)
-                @Html.TextBoxFor(x => x.UserName)
-                @Html.LabelFor(x => x.Password)
-                @Html.TextBoxFor(x => x.Password)
+    <div class="col-12 d-flex flex-column  justify-content-around  ">
 
-            </div>
+        @Html.LabelFor(x => x.UserName, htmlAttributes: new { @class = "control-label  " })
+        @Html.TextBoxFor(x => x.UserName, new { htmlAttributes = new { @class = "form-control", @placeholder = "User Name" } })
+        @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "text-danger" })
+        @Html.LabelFor(x => x.Password, htmlAttributes: new { @class = "control-label  " })
+        @Html.TextBoxFor(x => x.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
+        @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+
+    </div>
             <div class="col-12 mt-3">
                 <input type="submit" value="Register" class="btn-outline-primary btn-lg">
             </div>
