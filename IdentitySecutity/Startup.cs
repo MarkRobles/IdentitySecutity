@@ -5,6 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using Microsoft.Owin.Security.Cookies;
 using Owin;
 
 [assembly: OwinStartup(typeof(IdentitySecutity.Startup))]
@@ -25,6 +26,18 @@ namespace IdentitySecutity
             //Use UserStore to configure a UserManager
             app.CreatePerOwinContext<UserManager<IdentityUser>>
                 ((opt,cont) => new UserManager<IdentityUser>(cont.Get<UserStore<IdentityUser>>()));
+
+
+            //take credentials verify them
+            app.CreatePerOwinContext<SignInManager<IdentityUser,string>>(
+                (opt,cont) => 
+                new SignInManager<IdentityUser, string>(cont.Get<UserManager<IdentityUser>>(),cont.Authentication));
+
+            //Issue a cookie
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie
+            });
         }
     }
 }

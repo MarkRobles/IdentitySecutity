@@ -15,6 +15,8 @@ namespace IdentitySecutity.Controllers
     {
         //Get instance of user manager for this request
         public UserManager<IdentityUser> UserManager => HttpContext.GetOwinContext().Get<UserManager<IdentityUser>>();
+        public SignInManager<IdentityUser, string> SignInManager 
+            => HttpContext.GetOwinContext().Get<SignInManager<IdentityUser, string>>();
 
 
 
@@ -23,6 +25,8 @@ namespace IdentitySecutity.Controllers
         }
         [HttpPost]
         public  async Task<ActionResult> Register(RegisterModel model) {
+            
+
             var identityUser = await UserManager.FindByNameAsync(model.UserName);
 
             if (identityUser != null) {
@@ -41,6 +45,31 @@ namespace IdentitySecutity.Controllers
 
             ModelState.AddModelError("",identityResult.Errors.FirstOrDefault());
             return View(model);
+        }
+
+
+        public ActionResult Login() {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Login(LoginModel model) {
+            //Is persisten parameter 
+            //false = lifetime session duration
+            ///true = SetLifetime
+            ///ShouldLockOut parameter
+            ///true = increment lockout count if credentials are wrong
+           var signInStatus = await  SignInManager.PasswordSignInAsync(model.UserName,model.Password,true,true);
+
+            switch (signInStatus)
+            {
+                case SignInStatus.Success:
+                    return RedirectToAction("Index","Home");
+           
+                default:
+                    ModelState.AddModelError("","Invalid Credentials");
+                    return View(model);
+            }
         }
     }
 }
