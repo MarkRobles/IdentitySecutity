@@ -121,5 +121,41 @@ namespace IdentitySecutity.Controllers
             }
             return RedirectToAction("Index","Home");
         }
+
+
+        public ActionResult ForgotPassword() {
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordModel model) {
+
+            var user = await UserManager.FindByNameAsync(model.UserName);
+
+            if (user != null) { 
+                var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+            var resetUrl =    Url.Action("PasswordReset","Account", new { userid = user.Id, token = token }, Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id,"Password Reset",$"Use link to reset password {resetUrl}");
+            }
+
+            return RedirectToAction("Index","Home");
+        }
+
+
+        public ActionResult PasswordReset(string userid, string token) {
+            return View(new PasswordResetModel { UserId = userid, Token =  token });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PasswordReset(PasswordResetModel model)
+        {
+            var identityResult = await UserManager.ResetPasswordAsync(model.UserId,model.Token,model.Password);
+            if (!identityResult.Succeeded)
+            {
+                return View("Error");
+            }
+            return RedirectToAction("Index", "Home");
+
+        }
+
     }
 }
