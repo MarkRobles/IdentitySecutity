@@ -1,30 +1,49 @@
-﻿@model  IdentitySecutity.Models.LoginModel
+﻿@using Microsoft.Owin.Security
+@model  IdentitySecutity.Models.LoginModel
 @{
     ViewBag.Title = "Login";
 }
 
-    <div class="row mt-5">
-        <div class="col-12">
-            <h2>@ViewBag.Title</h2>
-        </div>
+<div class="row mt-5">
+    <div class="col-12">
+        <h2>@ViewBag.Title</h2>
+    </div>
 
-        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
-        {
-            @Html.ValidationSummary()
-            <div class="col-12 d-flex flex-column  justify-content-around  ">
-                @Html.LabelFor(x => x.UserName, htmlAttributes: new { @class = "control-label  " })
-                @Html.TextBoxFor(x => x.UserName, new { htmlAttributes = new { @class = "form-control", @placeholder = "User Name" } })
-                @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "text-danger" })
-                @Html.LabelFor(x => x.Password, htmlAttributes: new { @class = "control-label  " })
-                @Html.TextBoxFor(x => x.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
-                @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
-            </div>
-            <div class="col-12 mt-3">
-                <input type="submit" value="Log In" class="btn-outline-primary btn-lg">
-            </div>
-        }
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        @Html.ValidationSummary()
+        <div class="col-12 d-flex flex-column  justify-content-around  ">
+            @Html.LabelFor(x => x.UserName, htmlAttributes: new { @class = "control-label  " })
+            @Html.TextBoxFor(x => x.UserName, new { htmlAttributes = new { @class = "form-control", @placeholder = "User Name" } })
+            @Html.ValidationMessageFor(x => x.UserName, "", new { @class = "text-danger" })
+            @Html.LabelFor(x => x.Password, htmlAttributes: new { @class = "control-label  " })
+            @Html.TextBoxFor(x => x.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
+            @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-12 mt-3">
+            <input type="submit" value="Log In" class="btn-outline-primary btn-lg">
+        </div>
+    }
     <div class="col-12">
         @Html.ActionLink("Forgot Password?", "ForgotPassword");
     </div>
-       
+    <div class="col-12">
+        @{
+            var providers = Context.GetOwinContext().Authentication.GetAuthenticationTypes();
+
+            if (providers != null && providers.Any())
+            {
+                using (Html.BeginForm("ExternalAuthentication", "Account", FormMethod.Post))
+                {
+                    foreach (var provider in providers)
+                    {
+                        <button class="btn" value="@provider.AuthenticationType" name="provider" type="submit">
+                            @provider.Caption
+                        </button>
+                    }
+
+                }
+            }
+        }
     </div>
+</div>

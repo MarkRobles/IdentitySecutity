@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Web.Mvc;
 using IdentitySecutity.Models;
 using System.Threading.Tasks;
+using Microsoft.Owin.Security;
 
 namespace IdentitySecutity.Controllers
 {
@@ -18,7 +19,37 @@ namespace IdentitySecutity.Controllers
         public SignInManager<IdentityUser, string> SignInManager 
             => HttpContext.GetOwinContext().Get<SignInManager<IdentityUser, string>>();
 
+        public  ActionResult ExternalAuthentication(string provider)
+        {
+            SignInManager.AuthenticationManager.Challenge(
+                new AuthenticationProperties {
+                    RedirectUri = Url.Action("ExternalCallback", new { provider })
+                },provider);
+            return new HttpUnauthorizedResult();
 
+        }
+
+        public async Task<ActionResult> ExternalCallback(string provider) {
+      var loginInfo =      await SignInManager.AuthenticationManager.GetExternalLoginInfoAsync();
+    var signInStatus =   await     SignInManager.ExternalSignInAsync(loginInfo,true);
+
+            switch (signInStatus)
+            {
+                case SignInStatus.Success:
+                    return RedirectToAction("Index","Home");
+            
+                default:
+                     var user =await UserManager.FindByEmailAsync(loginInfo.Email);
+                    if (user != null) {
+                    var result =    await UserManager.AddLoginAsync(user.Id,loginInfo.Login);
+                        if (result.Succeeded) {
+                            return await ExternalCallback(provider);
+                        }
+                    }
+                    return View("Error");
+                    
+            }
+        }
 
         public ActionResult Register() {
             return View();
