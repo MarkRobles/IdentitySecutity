@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Google;
 using Owin;
 
 
@@ -54,6 +55,20 @@ namespace IdentitySecutity
 
             app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
+            //if this external signin cookie is after the google authenticator middleware(below) you will get an error
+            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+
+            //Configure google  authentication 
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
+            {
+                ClientId = ConfigurationManager.AppSettings["google:ClientId"],
+                ClientSecret = ConfigurationManager.AppSettings["google:ClientSecret"],
+                Caption = "Google"
+            }); ;
+
+
+       
+
         }
     }
 }
