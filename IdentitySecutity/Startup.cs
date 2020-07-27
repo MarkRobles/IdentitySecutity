@@ -38,7 +38,19 @@ namespace IdentitySecutity
                     //Register user Provider
                     usermanager.UserTokenProvider = new DataProtectorTokenProvider<IdentityUser>(opt.DataProtectionProvider.Create());
                     usermanager.EmailService = new EmailService();
-                    return usermanager;
+                //Configure user validator
+                usermanager.UserValidator = new UserValidator<IdentityUser>(usermanager) { RequireUniqueEmail = true };
+                    usermanager.PasswordValidator = new PasswordValidator
+                    {
+                        RequireDigit = true,
+                        RequireLowercase = true,
+                        RequireNonLetterOrDigit = true,
+                        RequireUppercase = true,
+                        RequiredLength = 8
+                    };
+                        
+
+            return usermanager;
                 });
 
 

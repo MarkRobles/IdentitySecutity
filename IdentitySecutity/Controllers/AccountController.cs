@@ -64,6 +64,13 @@ namespace IdentitySecutity.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            var result = await UserManager.PasswordValidator.ValidateAsync(model.Password);
+
+            if (!result.Succeeded) {
+                ModelState.AddModelError("",result.Errors.FirstOrDefault());
+                return View(model);
+            }
+
             var user = new IdentityUser(model.UserName)
             {
                Email = model.UserName
